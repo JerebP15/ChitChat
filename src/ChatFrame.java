@@ -20,7 +20,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTextArea output;
-	private JTextField input;
+	private JTextField inputfield;
 	private JTextField username;
 	private JButton prijava;
 	private JButton odjava;
@@ -28,6 +28,9 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	private Container polje1;
 	private Container polje2;
 	private JTextArea users;
+	private JLabel messagelabel;
+	private JPanel input;
+	private JButton pošlji;
 
 	public ChatFrame() {
 		super();
@@ -51,21 +54,21 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		usernameConstraint.gridx = 1;
 		usernameConstraint.gridy = 0;
 		polje1.add(username, usernameConstraint);
-		//input.addKeyListener(this);
+		polje1.addKeyListener(this);
 		
 		this.prijava = new JButton("Prijava");
 		GridBagConstraints prijavaConstraint = new GridBagConstraints();
 		prijavaConstraint.gridx = 2;
 		prijavaConstraint.gridy = 0;
 		polje1.add(prijava, prijavaConstraint);
-		server.login(System.getProperty("user.name"));
+		//server.login(System.getProperty("user.name"));
 		
 		this.odjava = new JButton("Odjava");
 		GridBagConstraints odjavaConstraint = new GridBagConstraints();
 		odjavaConstraint.gridx = 3;
 		odjavaConstraint.gridy = 0;
 		polje1.add(odjava, odjavaConstraint);
-		server.logout(System.getProperty("user.name"));
+		//server.logout(System.getProperty("user.name"));
 		
 		this.polje2 = new JPanel();
 		GridBagConstraints polje2Constraint = new GridBagConstraints();
@@ -87,11 +90,30 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		usersConstraint.gridy = 0;
 		polje2.add(users, usersConstraint);
 		
-		this.input = new JTextField(60);
+		this.input = new JPanel();
 		GridBagConstraints inputConstraint = new GridBagConstraints();
 		inputConstraint.gridx = 0;
 		inputConstraint.gridy = 2;
-		pane.add(input, inputConstraint);
+		pane.add(input, inputConstraint);	
+				
+		this.messagelabel = new JLabel("Sporoèilo:");
+		GridBagConstraints messagelabelConstraint = new GridBagConstraints();
+		usernamelabelConstraint.gridx = 0;
+		usernamelabelConstraint.gridy = 0;
+		input.add(messagelabel, messagelabelConstraint);
+		
+		this.inputfield = new JTextField(60);
+		GridBagConstraints inputfieldConstraint = new GridBagConstraints();
+		inputfieldConstraint.gridx = 1;
+		inputfieldConstraint.gridy = 0;
+		input.add(inputfield, inputfieldConstraint);
+		inputfield.addKeyListener(this);
+		
+		this.pošlji = new JButton("Pošlji");
+		GridBagConstraints pošljiConstraint = new GridBagConstraints();
+		pošljiConstraint.gridx = 2;
+		pošljiConstraint.gridy = 0;
+		input.add(pošlji, pošljiConstraint);
 		input.addKeyListener(this);
 	}
 
@@ -110,10 +132,10 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if (e.getSource() == this.input) {
+		if (e.getSource() == this.inputfield) {
 			if (e.getKeyChar() == '\n') {
-				this.addMessage(System.getProperty("user.name"), this.input.getText());
-				this.input.setText("");
+				this.addMessage(System.getProperty("user.name"), this.inputfield.getText());
+				this.inputfield.setText("");
 			}
 		}		
 	}
