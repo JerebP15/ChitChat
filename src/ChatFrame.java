@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -33,7 +34,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		Container pane = this.getContentPane();
 		pane.setLayout(new GridBagLayout());
 		
-		this.polje1 = new Container();
+		this.polje1 = new JPanel();
 		GridBagConstraints polje1Constraint = new GridBagConstraints();
 		polje1Constraint.gridx = 0;
 		polje1Constraint.gridy = 0;
@@ -66,7 +67,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		polje1.add(odjava, odjavaConstraint);
 		server.logout(System.getProperty("user.name"));
 		
-		this.polje2 = new Container();
+		this.polje2 = new JPanel();
 		GridBagConstraints polje2Constraint = new GridBagConstraints();
 		polje2Constraint.gridx = 0;
 		polje2Constraint.gridy = 1;
