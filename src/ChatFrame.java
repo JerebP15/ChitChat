@@ -62,7 +62,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		usernameConstraint.gridx = 1;
 		usernameConstraint.gridy = 0;
 		polje1.add(username, usernameConstraint);
-		polje1.addKeyListener(this);
+		username.addKeyListener(this);
 		
 		this.prijava = new JButton("Prijava");
 		GridBagConstraints prijavaConstraint = new GridBagConstraints();
@@ -173,6 +173,26 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 				this.inputfield.setText("");
 			}
 			
+		}
+		if (e.getSource() == this.username) {
+			if (e.getKeyChar() == '\n') {
+				if (this.username.getText() == ""){
+					//TODO Tukaj bi moral prekiniti èe nismo vpisali imena pa se ne, enako èe kliknemo gumb prijava
+					addMessage("Server:","Vpišite uporabniško ime!");
+				}
+				else{
+				try {
+					prijava();
+				} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			}
+			
 		}		
 	}
 
@@ -192,10 +212,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 				.addParameter("username", this.username.getText()).build();
 		HttpResponse response = Request.Post(uri).execute().returnResponse();
 		InputStream responseText = null;
-		if (this.username.getText() == ""){
-			uri = new URIBuilder("http://chitchat.andrej.com/users")
-					.addParameter("username", System.getProperty("user.name")).build();
-		}
+		this.users.append(this.username.getText() + "\n");
 		this.odjava.setEnabled(true);
 		this.prijava.setEnabled(false);
 		this.inputfield.setEditable(true);
@@ -218,6 +235,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 			String responseBody = Request.Delete(uri).execute().returnContent().asString();
 
 			System.out.println(responseBody);
+			this.users.setText(null);
 			this.odjava.setEnabled(false);			
 			this.inputfield.setText("");
 			this.inputfield.setEditable(false);
