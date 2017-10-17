@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 
 public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	
@@ -60,6 +68,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		GridBagConstraints prijavaConstraint = new GridBagConstraints();
 		prijavaConstraint.gridx = 2;
 		prijavaConstraint.gridy = 0;
+		prijava.addActionListener(this);
 		polje1.add(prijava, prijavaConstraint);
 		//server.login(System.getProperty("user.name"));
 		
@@ -68,6 +77,8 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		odjavaConstraint.gridx = 3;
 		odjavaConstraint.gridy = 0;
 		polje1.add(odjava, odjavaConstraint);
+		odjava.addActionListener(this);
+		odjava.setEnabled(false);
 		//server.logout(System.getProperty("user.name"));
 		
 		this.polje2 = new JPanel();
@@ -108,12 +119,15 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		inputfieldConstraint.gridy = 0;
 		input.add(inputfield, inputfieldConstraint);
 		inputfield.addKeyListener(this);
+		inputfield.setEditable(false);
 		
 		this.pošlji = new JButton("Pošlji");
 		GridBagConstraints pošljiConstraint = new GridBagConstraints();
 		pošljiConstraint.gridx = 2;
 		pošljiConstraint.gridy = 0;
 		input.add(pošlji, pošljiConstraint);
+		pošlji.addActionListener(this);
+		pošlji.setEnabled(false);
 		input.addKeyListener(this);
 	}
 
@@ -128,15 +142,37 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == prijava) {
+	        try {
+	        	prijava();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        }if (e.getSource() == odjava){
+        	try {
+        		this.addMessage("Server","Uspešno ste se odjavili!");
+				odjava();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+        }if (e.getSource() == pošlji){
+        	this.addMessage(this.username.getText(),this.inputfield.getText());
+        	this.inputfield.setText("");
+        	
+}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if (e.getSource() == this.inputfield) {
 			if (e.getKeyChar() == '\n') {
-				this.addMessage(System.getProperty("user.name"), this.inputfield.getText());
+				addMessage(this.username.getText(),this.inputfield.getText());
 				this.inputfield.setText("");
 			}
+			
 		}		
 	}
 
@@ -151,4 +187,45 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		// TODO Auto-generated method stub
 		
 	}
+	public void prijava() throws URISyntaxException, IOException {
+		URI uri = new URIBuilder("http://chitchat.andrej.com/users")
+				.addParameter("username", this.username.getText()).build();
+		HttpResponse response = Request.Post(uri).execute().returnResponse();
+		InputStream responseText = null;
+		if (this.username.getText() == ""){
+			uri = new URIBuilder("http://chitchat.andrej.com/users")
+					.addParameter("username", System.getProperty("user.name")).build();
+		}
+		this.odjava.setEnabled(true);
+		this.prijava.setEnabled(false);
+		this.inputfield.setEditable(true);
+		this.username.setEditable(false);
+		this.pošlji.setEnabled(true);
+		if (response.getStatusLine().getStatusCode()==200) {	
+			responseText=response.getEntity().getContent();
+						}else if(response.getStatusLine().getStatusCode()==403){
+
+							
+			responseText=response.getEntity().getContent();
+		}
+	} ;
+	
+	public void odjava() throws URISyntaxException {
+		try {
+			URI uri = new URIBuilder("http://chitchat.andrej.com/users")
+					.addParameter("username", getName()).build();
+
+			String responseBody = Request.Delete(uri).execute().returnContent().asString();
+
+			System.out.println(responseBody);
+			this.odjava.setEnabled(false);			
+			this.inputfield.setText("");
+			this.inputfield.setEditable(false);
+			this.pošlji.setEnabled(false);
+			this.prijava.setEnabled(true);
+			this.username.setEditable(true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			}
+}
 }
