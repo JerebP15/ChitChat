@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -57,7 +58,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		usernamelabelConstraint.gridy = 0;
 		polje1.add(usernamelabel, usernamelabelConstraint);
 		
-		this.username = new JTextField(10);
+		this.username = new JTextField(System.getProperty("user.name"),10);
 		GridBagConstraints usernameConstraint = new GridBagConstraints();
 		usernameConstraint.gridx = 1;
 		usernameConstraint.gridy = 0;
@@ -92,6 +93,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		GridBagConstraints outputConstraint = new GridBagConstraints();
 		outputConstraint.gridx = 0;
 		outputConstraint.gridy = 1;
+		JScrollPane scrollPaneoutput = new JScrollPane(output);
 		polje2.add(output, outputConstraint);
 		
 		this.users = new JTextArea(20, 40);
@@ -99,6 +101,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		GridBagConstraints usersConstraint = new GridBagConstraints();
 		usersConstraint.gridx = 1;
 		usersConstraint.gridy = 0;
+		JScrollPane scrollPaneusers = new JScrollPane(users);
 		polje2.add(users, usersConstraint);
 		
 		this.input = new JPanel();
@@ -143,6 +146,9 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == prijava) {
+			if (this.username.getText().equals("")){
+				this.addMessage("Server","Vpišite uporabniško ime!");
+			}else{
 	        try {
 	        	prijava();
 			} catch (URISyntaxException e1) {
@@ -150,6 +156,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			}
 			}
         }if (e.getSource() == odjava){
         	try {
@@ -159,9 +166,11 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 				e1.printStackTrace();
 			}
         }if (e.getSource() == pošlji){
+        	if (this.inputfield.getText().equals("")){
+			}else{
         	this.addMessage(this.username.getText(),this.inputfield.getText());
         	this.inputfield.setText("");
-        	
+			}        	
 }
 	}
 
@@ -169,18 +178,19 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	public void keyTyped(KeyEvent e) {
 		if (e.getSource() == this.inputfield) {
 			if (e.getKeyChar() == '\n') {
+				if (this.inputfield.getText().equals("")){
+				}else{
 				addMessage(this.username.getText(),this.inputfield.getText());
-				this.inputfield.setText("");
+				this.inputfield.setText("");			
 			}
 			
 		}
 		if (e.getSource() == this.username) {
 			if (e.getKeyChar() == '\n') {
-				if (this.username.getText() == ""){
-					//TODO Tukaj bi moral prekiniti èe nismo vpisali imena pa se ne, enako èe kliknemo gumb prijava
-					addMessage("Server:","Vpišite uporabniško ime!");
-				}
-				else{
+				if (this.username.getText().equals("")){
+					this.addMessage("Server","Vpišite uporabniško ime!");
+				}else{
+			}
 				try {
 					prijava();
 				} catch (URISyntaxException e1) {
@@ -189,23 +199,20 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
 			}
 			}
-			
+		}			
 		}		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 	public void prijava() throws URISyntaxException, IOException {
 		URI uri = new URIBuilder("http://chitchat.andrej.com/users")
@@ -220,9 +227,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		this.pošlji.setEnabled(true);
 		if (response.getStatusLine().getStatusCode()==200) {	
 			responseText=response.getEntity().getContent();
-						}else if(response.getStatusLine().getStatusCode()==403){
-
-							
+						}else if(response.getStatusLine().getStatusCode()==403){							
 			responseText=response.getEntity().getContent();
 		}
 	} ;
@@ -231,9 +236,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		try {
 			URI uri = new URIBuilder("http://chitchat.andrej.com/users")
 					.addParameter("username", getName()).build();
-
 			String responseBody = Request.Delete(uri).execute().returnContent().asString();
-
 			System.out.println(responseBody);
 			this.users.setText(null);
 			this.odjava.setEnabled(false);			
