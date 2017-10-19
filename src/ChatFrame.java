@@ -93,16 +93,24 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		GridBagConstraints outputConstraint = new GridBagConstraints();
 		outputConstraint.gridx = 0;
 		outputConstraint.gridy = 1;
+		outputConstraint.weightx = 0.5;
+		outputConstraint.weighty = 0.5;
+		outputConstraint.fill = GridBagConstraints.HORIZONTAL;
 		JScrollPane scrollPaneoutput = new JScrollPane(output);
 		polje2.add(output, outputConstraint);
+		polje2.add(scrollPaneoutput,outputConstraint);
 		
 		this.users = new JTextArea(20, 40);
 		this.users.setEditable(false);
 		GridBagConstraints usersConstraint = new GridBagConstraints();
 		usersConstraint.gridx = 1;
 		usersConstraint.gridy = 0;
+		usersConstraint.weightx = 0.5;
+		usersConstraint.weighty = 0.5;
+		usersConstraint.fill = GridBagConstraints.HORIZONTAL;
 		JScrollPane scrollPaneusers = new JScrollPane(users);
 		polje2.add(users, usersConstraint);
+		polje2.add(scrollPaneusers,usersConstraint);
 		
 		this.input = new JPanel();
 		GridBagConstraints inputConstraint = new GridBagConstraints();
@@ -185,12 +193,12 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 			}
 			
 		}
+		}
 		if (e.getSource() == this.username) {
 			if (e.getKeyChar() == '\n') {
 				if (this.username.getText().equals("")){
 					this.addMessage("Server","Vpišite uporabniško ime!");
-				}else{
-			}
+					}else{
 				try {
 					prijava();
 				} catch (URISyntaxException e1) {
@@ -200,9 +208,9 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 			}
-			}
-		}			
-		}		
+			}		
+		}
+		}
 	}
 
 	@Override
