@@ -3,9 +3,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Preprost strežnik, ki sprejema TCP povezave in odgovarja
- * klientu tako, da ponavlja vse, kar mu klient pošlje.
- * Èe klient pošlje {@code "bye"}, ga strežnik odklopi.
+ * Preprost streznik, ki sprejema TCP povezave in odgovarja
+ * klientu tako, da ponavlja vse, kar mu klient poslje.
+ * ce klient poslje {@code "bye"}, ga streznik odklopi.
  * 
  * @author Andrej Bauer
  *

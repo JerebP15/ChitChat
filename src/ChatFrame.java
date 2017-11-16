@@ -39,7 +39,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	private JTextArea users;
 	private JLabel messagelabel;
 	private JPanel input;
-	private JButton pošlji;
+	private JButton poslji;
 
 	public ChatFrame() {
 		super();
@@ -118,7 +118,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		inputConstraint.gridy = 2;
 		pane.add(input, inputConstraint);	
 				
-		this.messagelabel = new JLabel("Sporoèilo:");
+		this.messagelabel = new JLabel("Sporocilo:");
 		GridBagConstraints messagelabelConstraint = new GridBagConstraints();
 		usernamelabelConstraint.gridx = 0;
 		usernamelabelConstraint.gridy = 0;
@@ -132,13 +132,13 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		inputfield.addKeyListener(this);
 		inputfield.setEditable(false);
 		
-		this.pošlji = new JButton("Pošlji");
-		GridBagConstraints pošljiConstraint = new GridBagConstraints();
-		pošljiConstraint.gridx = 2;
-		pošljiConstraint.gridy = 0;
-		input.add(pošlji, pošljiConstraint);
-		pošlji.addActionListener(this);
-		pošlji.setEnabled(false);
+		this.poslji = new JButton("Poslji");
+		GridBagConstraints posljiConstraint = new GridBagConstraints();
+		posljiConstraint.gridx = 2;
+		posljiConstraint.gridy = 0;
+		input.add(poslji, posljiConstraint);
+		poslji.addActionListener(this);
+		poslji.setEnabled(false);
 		input.addKeyListener(this);
 	}
 
@@ -155,7 +155,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == prijava) {
 			if (this.username.getText().equals("")){
-				this.addMessage("Server","Vpišite uporabniško ime!");
+				this.addMessage("Server","Vpisite uporabnisko ime!");
 			}else{
 	        try {
 	        	prijava();
@@ -168,12 +168,12 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 			}
         }if (e.getSource() == odjava){
         	try {
-        		this.addMessage("Server","Uspešno ste se odjavili!");
+        		this.addMessage("Server","Uspesno ste se odjavili!");
 				odjava();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 			}
-        }if (e.getSource() == pošlji){
+        }if (e.getSource() == poslji){
         	if (this.inputfield.getText().equals("")){
 			}else{
         	this.addMessage(this.username.getText(),this.inputfield.getText());
@@ -197,7 +197,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		if (e.getSource() == this.username) {
 			if (e.getKeyChar() == '\n') {
 				if (this.username.getText().equals("")){
-					this.addMessage("Server","Vpišite uporabniško ime!");
+					this.addMessage("Server","Vpisite uporabnisko ime!");
 					}else{
 				try {
 					prijava();
@@ -232,7 +232,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 		this.prijava.setEnabled(false);
 		this.inputfield.setEditable(true);
 		this.username.setEditable(false);
-		this.pošlji.setEnabled(true);
+		this.poslji.setEnabled(true);
 		if (response.getStatusLine().getStatusCode()==200) {	
 			responseText=response.getEntity().getContent();
 						}else if(response.getStatusLine().getStatusCode()==403){							
@@ -250,7 +250,7 @@ public class ChatFrame extends JFrame implements ActionListener, KeyListener {
 			this.odjava.setEnabled(false);			
 			this.inputfield.setText("");
 			this.inputfield.setEditable(false);
-			this.pošlji.setEnabled(false);
+			this.poslji.setEnabled(false);
 			this.prijava.setEnabled(true);
 			this.username.setEditable(true);
 		} catch (IOException e) {
